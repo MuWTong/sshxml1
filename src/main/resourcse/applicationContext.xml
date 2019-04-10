@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:property-placeholder location="classpath:db.properties"/>
+    <!--包扫描配置-->
+    <context:component-scan base-package="com.bdqn.pojo,com.bdqn.dao,com.bdqn.action,com.bdqn.service"></context:component-scan>
+    <bean name="datasource" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"></property>
+    <property name="url" value="${jdbc.url}"/>
+    <property name="driverClassName" value="${jdbc.driver}"/>
+</bean>
+    <!-- 创建sessionFactory -->
+<bean name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+<property name="dataSource" ref="datasource"/>
+<property name="hibernateProperties">
+    <props>
+        <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.format_sql">true</prop>
+        <prop key="hibernate.hbm2ddl.auto">update</prop>
+        <prop key="hibernate.current_session_context_class">thread</prop>
+    </props>
+</property>
+    <property name="mappingResources">
+        <list>
+            <value>com/bdqn/pojo/Dept.hbm.xml</value>
+        </list>
+    </property>
+</bean>
+<bean name="deptDaoImpl" class="com.bdqn.dao.daoimpl.DeptDaoImpl">
+    <property name="sessionFactory" ref="sessionFactory"></property>
+</bean>
+
+</beans>
